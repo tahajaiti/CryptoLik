@@ -22,20 +22,26 @@ public class DBConnection {
         logger.info("DBConnection initialized with URL: " + url);
     }
 
-    public Connection getConnection() throws SQLException {
-        Connection conn = DriverManager.getConnection(url, user, password);
-        if (conn == null || conn.isClosed()) {
-            logger.warning("Failed to establish a valid database connection.");
-            throw new SQLException("Invalid database connection");
+    public Connection getConnection()  {
+        try {
+            Connection conn = DriverManager.getConnection(url, user, password);
+            if (conn == null || conn.isClosed()) {
+                logger.warning("Failed to establish a valid database connection.");
+                throw new SQLException("Invalid database connection");
+            }
+            logger.fine("Database connection established successfully.");
+            return conn;
+
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, "Failed to establish database connection", e);
+            throw new RuntimeException("Failed to establish database connection", e);
         }
-        logger.fine("Database connection established successfully.");
-        return conn;
     }
 
     public boolean testConnection() {
         try (Connection conn = getConnection()) {
             return conn.isValid(2);
-        } catch (SQLException e) {
+        } catch (Exception e) {
             logger.log(Level.SEVERE, "Database connection test failed", e);
             return false;
         }
