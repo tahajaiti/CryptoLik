@@ -14,8 +14,6 @@ public abstract class Wallet {
         this.balance = balance;
     }
 
-    public abstract void generateAddress();
-
     public int getId() {
         return id;
     }
