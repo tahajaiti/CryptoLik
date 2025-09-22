@@ -3,8 +3,8 @@ package entity;
 import entity.enums.WalletType;
 
 public class EthereumWallet  extends  Wallet{
-    public EthereumWallet(int id, double balance) {
-        super(id, WalletType.ETHEREUM, balance);
+    public EthereumWallet(double balance, String address) {
+        super(WalletType.ETHEREUM, balance, address);
     }
 
 }
