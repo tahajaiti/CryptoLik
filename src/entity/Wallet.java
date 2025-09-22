@@ -8,10 +8,10 @@ public abstract class Wallet {
     protected double balance;
     protected String address;
 
-    public Wallet(int id, WalletType walletType, double balance) {
-        this.id = id;
+    public Wallet(WalletType walletType, double balance, String address) {
         this.walletType = walletType;
         this.balance = balance;
+        this.address = address;
     }
 
     public int getId() {
