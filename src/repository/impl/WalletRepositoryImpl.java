@@ -52,7 +52,7 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO wallets(id, type, address, balance) VALUES(?, ?::wallet_type, ?, ?)";
+        return "INSERT INTO wallets(type, address, balance) VALUES(?::wallet_type, ?, ?)";
     }
 
 }

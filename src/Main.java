@@ -1,3 +1,4 @@
+import config.DBConfig;
 import db.DBConnection;
 import db.DatabaseInitializer;
 import entity.BitcoinWallet;
@@ -7,9 +8,9 @@ import repository.interfaces.Repository;
 public class Main {
     public static void main(String[] args) {
         DBConnection dbConnection = new DBConnection(
-                "jdbc:postgresql://localhost:5432/cryptolik",
-                "postgres", "root"
+                DBConfig.URL, DBConfig.USER, DBConfig.PASSWORD
         );
+
 
         DatabaseInitializer dbInitializer = new DatabaseInitializer(dbConnection);
         dbInitializer.init();
