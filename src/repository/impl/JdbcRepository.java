@@ -1,6 +1,7 @@
 package repository.impl;
 
 import db.DBConnection;
+import mapper.DB.DBMapper;
 import repository.interfaces.Repository;
 
 import java.sql.Connection;
@@ -22,9 +23,7 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
     }
 
     protected abstract String getTableName();
-    protected abstract T mapToEntity(ResultSet rs) throws SQLException;
-    protected abstract void setInsertParams(PreparedStatement stmt, T entity) throws SQLException;
-    protected abstract void setUpdateParams(PreparedStatement stmt, T entity) throws SQLException;
+    protected abstract DBMapper<T> getMapper();
     protected abstract String getUpdateQuery();
     protected abstract String getInsertQuery();
 
@@ -34,7 +33,7 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            setInsertParams(stmt, entity);
+            getMapper().toInsertStmt(stmt, entity);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
@@ -48,10 +47,10 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setObject(1, id);
+            stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
             if (rs.next()) {
-                return Optional.of(mapToEntity(rs));
+                return Optional.of(getMapper().fromResult(rs));
             }
 
         } catch (SQLException e) {
@@ -69,7 +68,7 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
              ResultSet rs = stmt.executeQuery()) {
 
             while (rs.next()) {
-                list.add(mapToEntity(rs));
+                list.add(getMapper().fromResult(rs));
             }
 
         } catch (SQLException e) {
@@ -84,7 +83,7 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            setUpdateParams(stmt, entity);
+            getMapper().toUpdateStmt(stmt, entity);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
