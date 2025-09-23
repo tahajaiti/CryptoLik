@@ -33,10 +33,9 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 
     @Override
     protected void setInsertParams(PreparedStatement stmt, Wallet wallet) throws SQLException {
-        stmt.setInt(1, wallet.getId());
-        stmt.setString(2, wallet.getWalletType().name());
-        stmt.setString(3, wallet.getAddress());
-        stmt.setDouble(4, wallet.getBalance());
+        stmt.setString(1, wallet.getWalletType().name());
+        stmt.setString(2, wallet.getAddress());
+        stmt.setDouble(3, wallet.getBalance());
     }
 
     @Override
