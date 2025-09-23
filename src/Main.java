@@ -15,11 +15,12 @@ public class Main {
         dbInitializer.init();
 
         Repository<Wallet> WalletRepository = new repository.impl.WalletRepositoryImpl(dbConnection);
-        Wallet wallet = new BitcoinWallet(1, "hehehehe");
+        Wallet wallet = new BitcoinWallet(1, "hoho");
+        wallet.setPassword("password123");
 
         WalletRepository.save(wallet);
 
-        WalletRepository.findAll().forEach(System.out::println);
+        WalletRepository.findAll().forEach(w -> System.out.println(w.getPassword()));
 
     }
 }

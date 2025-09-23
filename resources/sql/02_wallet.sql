@@ -7,9 +7,10 @@ DO $$
 $$;
 
 CREATE TABLE IF NOT EXISTS wallets (
-                                       id SERIAL PRIMARY KEY, -- makes auto-increment easier than integer manually
+                                       id SERIAL PRIMARY KEY,
                                        type wallet_type NOT NULL,
                                        address VARCHAR(100) UNIQUE NOT NULL,
                                        balance NUMERIC(38, 18) DEFAULT 0 NOT NULL,
+                                        password TEXT NOT NULL,
                                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

@@ -28,21 +28,22 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
                 ? new BitcoinWallet(rs.getDouble("balance"), rs.getString("address"))
                 : new EthereumWallet(rs.getDouble("balance"), rs.getString("address"));
         wallet.setId(rs.getInt("id"));
+        wallet.setPassword(rs.getString("password"));
         return wallet;
     }
 
     @Override
     protected void setInsertParams(PreparedStatement stmt, Wallet wallet) throws SQLException {
-        stmt.setInt(1, wallet.getId());
-        stmt.setString(2, wallet.getWalletType().name());
-        stmt.setString(3, wallet.getAddress());
-        stmt.setDouble(4, wallet.getBalance());
+        stmt.setString(1, wallet.getWalletType().name());
+        stmt.setString(2, wallet.getAddress());
+        stmt.setDouble(3, wallet.getBalance());
+        stmt.setString(4, wallet.getPassword());
     }
 
     @Override
     protected void setUpdateParams(PreparedStatement stmt, Wallet wallet) throws SQLException {
-        stmt.setDouble(2, wallet.getBalance());
-        stmt.setInt(3, wallet.getId());
+        stmt.setDouble(1, wallet.getBalance());
+        stmt.setInt(2, wallet.getId());
     }
 
     @Override
@@ -52,7 +53,7 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO wallets(id, type, address, balance) VALUES(?, ?::wallet_type, ?, ?)";
+        return "INSERT INTO wallets(type, address, balance, password) VALUES(?::wallet_type, ?, ?, ?)";
     }
 
 }
