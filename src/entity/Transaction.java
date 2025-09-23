@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public class Transaction {
-    private String id;
+    private UUID id;
     private String srcAddress;
     private String destAddress;
     private double amount;
@@ -19,14 +19,12 @@ public class Transaction {
 
     public Transaction(String sourceAddress, String destinationAddress, double amount,
                        FeePriority feePriority, double fees) {
-        this.id = UUID.randomUUID().toString();
         this.srcAddress = sourceAddress;
         this.destAddress = destinationAddress;
         this.amount = amount;
         this.feePriority = feePriority;
         this.fee = fees;
         this.status = TransactionStatus.PENDING;
-        this.timestamp = LocalDateTime.now();
         this.mempoolPosition = -1;
     }
 
@@ -95,11 +93,11 @@ public class Transaction {
         this.srcAddress = srcAddress;
     }
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -107,7 +105,7 @@ public class Transaction {
     @Override
     public String toString() {
         return String.format("TX[%s]: From %s -> %s | Amount: %.2f | Fees: %.2f | Priority: %s | Status: %s",
-                id.substring(0, 8), srcAddress, destAddress, amount, fee, feePriority, status);
+                id.toString().substring(0,5), srcAddress, destAddress, amount, fee, feePriority, status);
     }
 
 }
