@@ -25,9 +25,8 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
     protected Wallet mapToEntity(ResultSet rs) throws SQLException {
         WalletType type = WalletType.valueOf(rs.getString("type"));
         Wallet wallet = type == WalletType.BITCOIN
-                ? new BitcoinWallet(rs.getInt("id"), rs.getDouble("balance"))
-                : new EthereumWallet(rs.getInt("id"), rs.getDouble("balance"));
-        wallet.setAddress(rs.getString("address"));
+                ? new BitcoinWallet(rs.getDouble("balance"), rs.getString("address"))
+                : new EthereumWallet(rs.getDouble("balance"), rs.getString("address"));
         wallet.setId(rs.getInt("id"));
         return wallet;
     }
@@ -53,6 +52,7 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO wallets(id, type, address, balance) VALUES(?, ?, ?, ?)";
+        return "INSERT INTO wallets(id, type, address, balance) VALUES(?, ?::wallet_type, ?, ?)";
     }
+
 }
