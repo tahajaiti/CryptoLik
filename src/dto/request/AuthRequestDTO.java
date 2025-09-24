@@ -1,7 +1,5 @@
 package dto.request;
 
-import entity.enums.WalletType;
-
 public class AuthRequestDTO {
     private final int id;
     private final String password;

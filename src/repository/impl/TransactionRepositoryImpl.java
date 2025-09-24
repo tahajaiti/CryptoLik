@@ -2,10 +2,8 @@ package repository.impl;
 
 import db.DBConnection;
 import entity.Transaction;
-import entity.Wallet;
 import mapper.DB.DBMapper;
 import mapper.DB.impl.TransactionDbMapper;
-import mapper.DB.impl.WalletDbMapper;
 
 public class TransactionRepositoryImpl extends JdbcRepository<Transaction>{
 

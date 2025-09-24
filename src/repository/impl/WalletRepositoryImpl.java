@@ -1,16 +1,10 @@
 package repository.impl;
 
 import db.DBConnection;
-import entity.BitcoinWallet;
-import entity.EthereumWallet;
 import entity.Wallet;
-import entity.enums.WalletType;
 import mapper.DB.DBMapper;
 import mapper.DB.impl.WalletDbMapper;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 

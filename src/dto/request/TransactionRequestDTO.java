@@ -1,7 +1,5 @@
 package dto.request;
 
-import entity.enums.WalletType;
-
 public class TransactionRequestDTO {
     private String srcAddress;
     private String destAddress;
