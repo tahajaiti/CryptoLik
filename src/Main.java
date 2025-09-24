@@ -16,7 +16,7 @@ public class Main {
         dbInitializer.init();
 
         Repository<Wallet> WalletRepository = new repository.impl.WalletRepositoryImpl(dbConnection);
-        Wallet wallet = new BitcoinWallet(0.0, "shfkjsdhkfsdgi");
+        Wallet wallet = new BitcoinWallet(0.0, "shfkjsdhkfsdgihh");
         wallet.setPassword("password123");
 
         WalletRepository.save(wallet);
