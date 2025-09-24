@@ -1,4 +1,4 @@
-package service;
+package util;
 
 import entity.Transaction;
 import entity.Wallet;
