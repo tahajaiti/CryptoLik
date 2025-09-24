@@ -28,7 +28,7 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
     protected abstract String getInsertQuery();
 
     @Override
-    public void save(T entity) {
+    public T save(T entity) {
         String sql = getInsertQuery();
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -36,8 +36,10 @@ public abstract class JdbcRepository<T>  implements Repository<T> {
             getMapper().toInsertStmt(stmt, entity);
             stmt.executeUpdate();
 
+            return entity;
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error saving entity in " + getTableName(), e);
+            throw new RuntimeException(e);
         }
     }
 

@@ -55,4 +55,15 @@ public abstract class Wallet {
     public void setPassword(String password) {
         this.password = PasswordUtil.hashPassword(password);
     }
+
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "id=" + id +
+                ", walletType=" + walletType +
+                ", balance=" + balance +
+                ", address='" + address + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }

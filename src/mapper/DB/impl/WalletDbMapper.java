@@ -14,7 +14,7 @@ public class WalletDbMapper implements DBMapper<Wallet> {
 
     @Override
     public Wallet fromResult(ResultSet rs) throws SQLException {
-        WalletType type = WalletType.valueOf(rs.getString("wallet_type"));
+        WalletType type = WalletType.valueOf(rs.getString("type"));
         Wallet wallet = (type == WalletType.BITCOIN)
                 ? new BitcoinWallet(rs.getDouble("balance"), rs.getString("address"))
                 : new EthereumWallet(rs.getDouble("balance"), rs.getString("address"));
@@ -27,8 +27,8 @@ public class WalletDbMapper implements DBMapper<Wallet> {
     @Override
     public void toInsertStmt(PreparedStatement stmt, Wallet wallet) throws SQLException {
         stmt.setString(1, wallet.getWalletType().name());
-        stmt.setDouble(2, wallet.getBalance());
-        stmt.setString(3, wallet.getAddress());
+        stmt.setString(2, wallet.getAddress());
+        stmt.setDouble(3, wallet.getBalance());
         stmt.setString(4, wallet.getPassword());
     }
 
