@@ -1,9 +1,9 @@
-package mapper.DTO.impl;
+package mapper.dto.impl;
 
 import dto.request.TransactionRequestDTO;
 import dto.response.TransactionResponseDTO;
 import entity.Transaction;
-import mapper.DTO.DTOMapper;
+import mapper.dto.interfaces.DTOMapper;
 
 public class TransactionDtoMapper implements DTOMapper<Transaction, TransactionResponseDTO, TransactionRequestDTO> {
 

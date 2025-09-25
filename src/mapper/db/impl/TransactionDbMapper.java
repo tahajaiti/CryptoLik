@@ -1,9 +1,9 @@
-package mapper.DB.impl;
+package mapper.db.impl;
 
 import entity.Transaction;
 import entity.enums.FeePriority;
 import entity.enums.TransactionStatus;
-import mapper.DB.DBMapper;
+import mapper.db.DBMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -56,5 +56,11 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
     @Override
     public void toUpdateStmt(PreparedStatement stmt, Transaction tx) throws SQLException {
         throw new SQLException("Update operation not supported for Transaction entity.");
+    }
+
+    @Override
+    public Transaction setId(Transaction entity, int id) {
+        // Transaction ID is a UUID and is set during creation, so this method is not applicable.
+        return entity;
     }
 }

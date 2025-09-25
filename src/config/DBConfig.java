@@ -6,4 +6,6 @@ public class DBConfig {
     public static final String USER = "postgres";
     public static final String PASSWORD = "root";
 
+    private DBConfig() {
+    }
 }

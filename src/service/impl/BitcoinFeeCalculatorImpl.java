@@ -18,7 +18,7 @@ public class BitcoinFeeCalculatorImpl implements FeeCalculator {
             default: satPerByte = 10;
         }
 
-        double fee = txSizeBytes * satPerByte;
+        double fee = (double) txSizeBytes * satPerByte;
         double btcPrice = FeeConfig.BITCOIN_PRICE;
         return fee * btcPrice;
     }

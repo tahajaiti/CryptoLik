@@ -1,10 +1,10 @@
-package mapper.DB.impl;
+package mapper.db.impl;
 
 import entity.BitcoinWallet;
 import entity.EthereumWallet;
 import entity.Wallet;
 import entity.enums.WalletType;
-import mapper.DB.DBMapper;
+import mapper.db.DBMapper;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -36,5 +36,11 @@ public class WalletDbMapper implements DBMapper<Wallet> {
     public void toUpdateStmt(PreparedStatement stmt, Wallet wallet) throws SQLException {
         stmt.setDouble(1, wallet.getBalance());
         stmt.setInt(2, wallet.getId());
+    }
+
+    @Override
+    public Wallet setId(Wallet entity, int id) {
+        entity.setId(id);
+        return entity;
     }
 }

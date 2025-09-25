@@ -1,27 +1,33 @@
-import config.DBConfig;
-import db.DBConnection;
 import db.DatabaseInitializer;
-import entity.BitcoinWallet;
-import entity.Wallet;
-import repository.interfaces.Repository;
+import di.DIContainerImpl;
+import di.DependancyRegistery;
+import service.interfaces.AuthService;
+import ui.Menu;
+import ui.UIManager;
+import ui.menu.AuthMenu;
+import ui.menu.MainMenu;
+import ui.menu.MenuBootloader;
 
 public class Main {
     public static void main(String[] args) {
-        DBConnection dbConnection = new DBConnection(
-                DBConfig.URL, DBConfig.USER, DBConfig.PASSWORD
-        );
+
+        DependancyRegistery.boot();
+
+        DatabaseInitializer dbInitializer = DIContainerImpl.resolveStatic(DatabaseInitializer.class);
+        
+        dbInitializer.init();        
 
 
-        DatabaseInitializer dbInitializer = new DatabaseInitializer(dbConnection);
-        dbInitializer.init();
+        MainMenu mainMenu = new MainMenu();
+        Menu authMenu = new AuthMenu(DIContainerImpl.resolveStatic(AuthService.class));
 
-        Repository<Wallet> WalletRepository = new repository.impl.WalletRepositoryImpl(dbConnection);
-        Wallet wallet = new BitcoinWallet(0.0, "shfkjsdhkfsdgi");
-        wallet.setPassword("password123");
 
-        WalletRepository.save(wallet);
+        UIManager uiManager = DIContainerImpl.resolveStatic(UIManager.class);
 
-        WalletRepository.findAll().forEach(w -> System.out.println(w.getPassword()));
+        MenuBootloader bootloader = new MenuBootloader(DIContainerImpl.resolveStatic(UIManager.class));
+        bootloader.register(mainMenu);
+        bootloader.register(authMenu);
+        bootloader.boot(authMenu.getId());
 
     }
 }

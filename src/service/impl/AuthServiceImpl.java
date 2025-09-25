@@ -10,37 +10,47 @@ import entity.EthereumWallet;
 import entity.Wallet;
 import entity.enums.WalletType;
 import exceptions.InvalidCredentialsException;
+import exceptions.InvalidPasswordException;
 import exceptions.NotFoundException;
-import mapper.DTO.DTOMapper;
-import repository.interfaces.Repository;
+import mapper.dto.interfaces.WalletDTOMapper;
+import repository.interfaces.WalletRepository;
 import service.interfaces.AuthService;
 import util.AddressGenerator;
 import util.PasswordUtil;
+import util.WalletValidator;
 
 public class AuthServiceImpl implements AuthService {
 
-    private final Repository<Wallet> walletRepository;
-    private final DTOMapper<Wallet, WalletResponseDTO, WalletRequestDTO> walletMapper;
+    private final WalletRepository walletRepository;
+    private final WalletDTOMapper walletMapper;
     private final SessionServiceImpl sessionService;
 
-    public AuthServiceImpl(Repository<Wallet>  walletRepository,
-                           DTOMapper<Wallet, WalletResponseDTO, WalletRequestDTO> walletMapper,
-                           SessionServiceImpl sessionService) {
+    public AuthServiceImpl(WalletRepository walletRepository,
+            WalletDTOMapper walletMapper,
+            SessionServiceImpl sessionService) {
         this.walletRepository = walletRepository;
         this.walletMapper = walletMapper;
         this.sessionService = sessionService;
     }
 
     @Override
-    public WalletResponseDTO register(WalletRequestDTO dto){
-        String address = AddressGenerator.generateAddress(dto.getWalletType());
+    public WalletResponseDTO register(WalletRequestDTO dto) {
+        if (!WalletValidator.isValidPassword(dto.getPassword())) {
+            throw new InvalidPasswordException("Password must be at least 6 characters long.");
+        }
 
-        Wallet wallet = dto.getWalletType() == WalletType.BITCOIN ?
-                new BitcoinWallet(GlobalConfig.DEFAULT_WALLET_BALANCE, address)
+        WalletType type = WalletValidator.parseWalletType(dto.getWalletType());
+
+        String address = AddressGenerator.generateAddress(type);
+
+        Wallet wallet = type == WalletType.BITCOIN
+                ? new BitcoinWallet(GlobalConfig.DEFAULT_WALLET_BALANCE, address)
                 : new EthereumWallet(GlobalConfig.DEFAULT_WALLET_BALANCE, address);
 
-        wallet.setPassword(dto.getPassword());
+        wallet.setPassword(PasswordUtil.hashPassword(dto.getPassword()));
+
         Wallet savedWallet = walletRepository.save(wallet);
+
         return walletMapper.toResponseDTO(savedWallet);
     }
 
@@ -66,7 +76,10 @@ public class AuthServiceImpl implements AuthService {
     public WalletResponseDTO getCurrentUser(String token) {
         int walletId = sessionService.getWalletId(token);
         Wallet wallet = walletRepository.findById(walletId)
-                .orElseThrow(() -> new NotFoundException("Wallet not found"));
+                .orElseThrow(() -> {
+                    sessionService.endSession(token);
+                    return new NotFoundException("Wallet not found");
+                });
         return walletMapper.toResponseDTO(wallet);
     }
 

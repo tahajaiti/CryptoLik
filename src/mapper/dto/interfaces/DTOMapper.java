@@ -1,4 +1,4 @@
-package mapper.DTO;
+package mapper.dto.interfaces;
 
 public interface DTOMapper<Entity, ResponseDTO, RequestDTO> {
     ResponseDTO toResponseDTO(Entity entity);

@@ -19,7 +19,7 @@ public class EthereumFeeCalculatorImpl implements FeeCalculator {
             default: gasPrice = 10;
         }
 
-        double fee = gasLimit * gasPrice;
+        double fee = (double) gasLimit * gasPrice;
         double ethPrice = FeeConfig.ETHEREUM_PRICE;
         return fee * ethPrice;
     }

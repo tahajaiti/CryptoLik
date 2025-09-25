@@ -18,7 +18,7 @@ public class Transaction {
     private int mempoolPosition;
 
     public Transaction(String sourceAddress, String destinationAddress, double amount,
-                       FeePriority feePriority, double fees) {
+            FeePriority feePriority, double fees) {
         this.srcAddress = sourceAddress;
         this.destAddress = destinationAddress;
         this.amount = amount;
@@ -27,7 +27,6 @@ public class Transaction {
         this.status = TransactionStatus.PENDING;
         this.mempoolPosition = -1;
     }
-
 
     public int getMempoolPosition() {
         return mempoolPosition;
@@ -101,11 +100,10 @@ public class Transaction {
         this.id = id;
     }
 
-
     @Override
     public String toString() {
         return String.format("TX[%s]: From %s -> %s | Amount: %.2f | Fees: %.2f | Priority: %s | Status: %s",
-                id.toString().substring(0,5), srcAddress, destAddress, amount, fee, feePriority, status);
+                id.toString().substring(0, 5), srcAddress, destAddress, amount, fee, feePriority, status);
     }
 
 }
