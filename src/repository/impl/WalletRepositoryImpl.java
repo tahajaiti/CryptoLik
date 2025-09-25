@@ -4,15 +4,21 @@ import db.DBConnection;
 import entity.BitcoinWallet;
 import entity.EthereumWallet;
 import entity.Wallet;
+<<<<<<< Updated upstream
 import entity.enums.WalletType;
 import mapper.DB.DBMapper;
 import mapper.DB.impl.WalletDbMapper;
+=======
+import mapper.db.DBMapper;
+import mapper.db.impl.WalletDbMapper;
+import repository.interfaces.WalletRepository;
+>>>>>>> Stashed changes
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
+public class WalletRepositoryImpl extends JdbcRepository<Wallet> implements WalletRepository{
 
     private final DBMapper<Wallet> mapper = new WalletDbMapper();
 
@@ -37,7 +43,7 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO wallets(type, address, balance, password) VALUES(?::wallet_type, ?, ?, ?)";
+        return "INSERT INTO wallets(type, address, balance, password) VALUES(?::wallet_type, ?, ?, ?) RETURNING id";
     }
 
 }
