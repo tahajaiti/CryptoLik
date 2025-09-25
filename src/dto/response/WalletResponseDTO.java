@@ -3,16 +3,25 @@ package dto.response;
 import entity.enums.WalletType;
 
 public class WalletResponseDTO {
+    private int id;
     private String address;
     private WalletType walletType;
     private double balance;
 
     public WalletResponseDTO() {}
 
-    public WalletResponseDTO(String address, WalletType walletType, double balance) {
+    public WalletResponseDTO(int id, String address, WalletType walletType, double balance) {
+        this.id = id;
         this.address = address;
         this.walletType = walletType;
         this.balance = balance;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getAddress() {

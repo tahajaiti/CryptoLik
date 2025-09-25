@@ -1,23 +1,22 @@
 package dto.request;
 
-import entity.enums.WalletType;
 
 public class WalletRequestDTO {
-    private WalletType walletType;
+    private String walletType;
     private String password;
 
     public WalletRequestDTO() {}
 
-    public WalletRequestDTO(WalletType walletType, String password) {
+    public WalletRequestDTO(String walletType, String password) {
         this.walletType = walletType;
         this.password = password;
     }
 
-    public WalletType getWalletType() {
+    public String getWalletType() {
         return walletType;
     }
 
-    public void setWalletType(WalletType walletType) {
+    public void setWalletType(String walletType) {
         this.walletType = walletType;
     }
 
