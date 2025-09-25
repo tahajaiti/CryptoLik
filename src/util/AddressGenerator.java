@@ -8,6 +8,8 @@ public class AddressGenerator {
     private static final String BASE58 = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
     private static final SecureRandom RANDOM = new SecureRandom();
 
+    private AddressGenerator(){}
+
     public static String generateAddress(WalletType type){
         switch (type){
             case BITCOIN: return generateBitcoinAddress();

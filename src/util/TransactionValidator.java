@@ -12,6 +12,8 @@ public class TransactionValidator {
 
     private static final Pattern BTC_ADDRESS_PATTERN = Pattern.compile("^(1|3|bc1)[a-zA-Z0-9]{20,}$");
 
+    private TransactionValidator(){}
+
     public static void validate(Transaction tx, Wallet sourceWallet) throws IllegalArgumentException {
         if (tx.getAmount() <= 0) {
             throw new IllegalArgumentException("The amount must be positive.");
