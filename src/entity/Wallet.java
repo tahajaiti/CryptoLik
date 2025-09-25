@@ -1,12 +1,14 @@
 package entity;
 
 import entity.enums.WalletType;
+import util.PasswordUtil;
 
 public abstract class Wallet {
     protected int id;
     protected WalletType walletType;
     protected double balance;
     protected String address;
+    protected String password;
 
     public Wallet(WalletType walletType, double balance, String address) {
         this.walletType = walletType;
@@ -44,5 +46,24 @@ public abstract class Wallet {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = PasswordUtil.hashPassword(password);
+    }
+
+    @Override
+    public String toString() {
+        return "Wallet{" +
+                "id=" + id +
+                ", walletType=" + walletType +
+                ", balance=" + balance +
+                ", address='" + address + '\'' +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
