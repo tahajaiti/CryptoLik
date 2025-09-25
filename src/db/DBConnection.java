@@ -4,12 +4,11 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import exceptions.DatabaseConnectionException;
+import util.Log;
 
 public class DBConnection {
-    private static final Logger logger = Logger.getLogger(DBConnection.class.getName());
-
     private final String url;
     private final String user;
     private final String password;
@@ -19,22 +18,21 @@ public class DBConnection {
         this.user = Objects.requireNonNull(user, "Database user cannot be null");
         this.password = Objects.requireNonNull(password, "Database password cannot be null");
 
-        logger.info("DBConnection initialized with URL: " + url);
+        Log.info(getClass(), "DBConnection initialized with URL: " + url + ", User: " + user);
     }
 
     public Connection getConnection()  {
         try {
             Connection conn = DriverManager.getConnection(url, user, password);
-            if (conn == null || conn.isClosed()) {
-                logger.warning("Failed to establish a valid database connection.");
+            if (conn.isClosed() || !conn.isValid(5)) {
+                Log.warn(getClass(), "Failed to establish a valid database connection.");
                 throw new SQLException("Invalid database connection");
             }
-            logger.fine("Database connection established successfully.");
             return conn;
 
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Failed to establish database connection", e);
-            throw new RuntimeException("Failed to establish database connection", e);
+            Log.error(getClass(), "Failed to establish database connection", e);
+            throw new DatabaseConnectionException("Failed to establish database connection", e);
         }
     }
 
@@ -42,7 +40,7 @@ public class DBConnection {
         try (Connection conn = getConnection()) {
             return conn.isValid(2);
         } catch (Exception e) {
-            logger.log(Level.SEVERE, "Database connection test failed", e);
+            Log.error(getClass(), "Database connection test failed", e);
             return false;
         }
     }
