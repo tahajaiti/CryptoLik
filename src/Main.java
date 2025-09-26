@@ -22,8 +22,6 @@ public class Main {
         Menu authMenu = new AuthMenu(DIContainerImpl.resolveStatic(AuthService.class));
 
 
-        UIManager uiManager = DIContainerImpl.resolveStatic(UIManager.class);
-
         MenuBootloader bootloader = new MenuBootloader(DIContainerImpl.resolveStatic(UIManager.class));
         bootloader.register(mainMenu);
         bootloader.register(authMenu);

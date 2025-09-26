@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Statement;
-import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 import exceptions.DatabaseInitializationException;
