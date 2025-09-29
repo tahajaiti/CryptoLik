@@ -7,7 +7,7 @@ import mapper.db.impl.WalletDbMapper;
 import repository.interfaces.WalletRepository;
 
 
-public class WalletRepositoryImpl extends JdbcRepository<Wallet> implements WalletRepository{
+public class WalletRepositoryImpl extends JdbcRepository<Wallet, Integer> implements WalletRepository{
 
     private final DBMapper<Wallet> mapper = new WalletDbMapper();
 
@@ -33,6 +33,16 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet> implements Wall
     @Override
     protected String getInsertQuery() {
         return "INSERT INTO wallets(type, address, balance, password) VALUES(?::wallet_type, ?, ?, ?) RETURNING id";
+    }
+
+    @Override
+    protected Wallet setGeneratedId(Wallet entity, Object key) {
+        if (key instanceof Integer) {
+            entity.setId((Integer) key);
+        } else {
+            throw new IllegalStateException("Unexpected key type: " + key.getClass());
+        }
+        return entity;
     }
 
 }

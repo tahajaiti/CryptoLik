@@ -4,13 +4,17 @@ import db.DBConnection;
 import entity.Transaction;
 import mapper.db.DBMapper;
 import mapper.db.impl.TransactionDbMapper;
+import repository.interfaces.TransactionRepository;
 
-public class TransactionRepositoryImpl extends JdbcRepository<Transaction>{
+import java.util.UUID;
 
-    private final DBMapper<Transaction> mapper = new TransactionDbMapper();
+public class TransactionRepositoryImpl extends JdbcRepository<Transaction, UUID> implements TransactionRepository {
+
+    private final DBMapper<Transaction> mapper;
 
     public TransactionRepositoryImpl(DBConnection dbConnection) {
         super(dbConnection);
+        this.mapper = new TransactionDbMapper();
     }
 
     @Override
@@ -30,7 +34,18 @@ public class TransactionRepositoryImpl extends JdbcRepository<Transaction>{
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO transactions(id, source_address, destination_address, amount, fee, fee_priority, status, created_at, position) " +
-                "VALUES(?, ?, ?, ?, ?, ?::fee_priority, ?::transaction_status, ?, ?)";
+        return "INSERT INTO transactions(" +
+                "src_address, dest_address, amount, fee, fee_priority, status, wallet_type, timestamp, mempool_position" +
+                ") VALUES(?, ?, ?, ?, ?::fee_priority, ?::transaction_status, ?::wallet_type, ?, ?)";
+    }
+
+    @Override
+    protected Transaction setGeneratedId(Transaction entity, Object key) {
+        if (key instanceof UUID) {
+            entity.setId((UUID) key);
+        } else {
+            throw new IllegalStateException("Unexpected key type: " + key.getClass());
+        }
+        return entity;
     }
 }

@@ -3,10 +3,10 @@ package repository.interfaces;
 import java.util.List;
 import java.util.Optional;
 
-public interface Repository<T> {
+public interface Repository<T, ID> {
     T save(T entity);
-    Optional<T> findById(int id);
+    Optional<T> findById(ID id);
     List<T> findAll();
     void update(T entity);
-    void delete(int id);
+    void delete(ID id);
 }

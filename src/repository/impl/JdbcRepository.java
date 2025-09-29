@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
-public abstract class JdbcRepository<T> implements Repository<T> {
+public abstract class JdbcRepository<T, ID> implements Repository<T, ID> {
     protected final Logger logger = Logger.getLogger(this.getClass().getName());
     protected final DBConnection dbConnection;
 
@@ -26,52 +26,48 @@ public abstract class JdbcRepository<T> implements Repository<T> {
     }
 
     protected abstract String getTableName();
-
     protected abstract DBMapper<T> getMapper();
-
     protected abstract String getUpdateQuery();
-
     protected abstract String getInsertQuery();
+
+    protected abstract T setGeneratedId(T entity, Object generatedKey);
 
     @Override
     public T save(T entity) {
         String sql = getInsertQuery();
         try (Connection conn = dbConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             getMapper().toInsertStmt(stmt, entity);
             int affected = stmt.executeUpdate();
-            
-            if (affected == 0) {
-                throw new SQLException("Creating entity failed, no rows affected.");
-            }
+
+            if (affected == 0) throw new SQLException("Creating entity failed, no rows affected.");
 
             try (ResultSet genKeys = stmt.getGeneratedKeys()) {
                 if (genKeys.next()) {
-                    entity = getMapper().setId(entity, genKeys.getInt(1));
+                    Object key = genKeys.getObject(1);
+                    entity = setGeneratedId(entity, key);
                 } else {
                     throw new SQLException("Creating entity failed, no ID obtained.");
                 }
             }
 
             return entity;
+
         } catch (SQLException e) {
             Log.error(getClass(), "Error saving entity in " + getTableName(), e);
-            throw new FailedToSaveException("Failed to save entity" + getTableName(), e);
+            throw new FailedToSaveException("Failed to save entity " + getTableName(), e);
         }
     }
 
-    @Override
-    public Optional<T> findById(int id) {
+    public Optional<T> findById(ID id) {
         String sql = "SELECT * FROM " + getTableName() + " WHERE id = ?";
         try (Connection conn = dbConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, id);
+            stmt.setObject(1, id);
             ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                return Optional.of(getMapper().fromResult(rs));
-            }
+            if (rs.next()) return Optional.of(getMapper().fromResult(rs));
 
         } catch (SQLException e) {
             Log.error(getClass(), "Error finding entity by ID in " + getTableName());
@@ -115,12 +111,12 @@ public abstract class JdbcRepository<T> implements Repository<T> {
     }
 
     @Override
-    public void delete(int id) {
+    public void delete(ID id) {
         String sql = "DELETE FROM " + getTableName() + " WHERE id = ?";
         try (Connection conn = dbConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setObject(1, id);
+            stmt.setObject(1, id); // works for int or UUID
             stmt.executeUpdate();
 
         } catch (SQLException e) {
