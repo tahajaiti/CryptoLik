@@ -24,6 +24,7 @@ public class AuthServiceImpl implements AuthService {
     private final WalletRepository walletRepository;
     private final WalletDTOMapper walletMapper;
     private final SessionServiceImpl sessionService;
+    private String token;
 
     public AuthServiceImpl(WalletRepository walletRepository,
             WalletDTOMapper walletMapper,
@@ -63,24 +64,32 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        String token = sessionService.startSession(wallet.getId());
-        return new AuthResponseDTO(walletMapper.toResponseDTO(wallet), token);
+        setToken(sessionService.startSession(wallet.getId()));
+        return new AuthResponseDTO(walletMapper.toResponseDTO(wallet), getToken());
     }
 
     @Override
-    public void logout(String token) {
-        sessionService.endSession(token);
+    public void logout() {
+        sessionService.endSession(getToken());
     }
 
     @Override
-    public WalletResponseDTO getCurrentUser(String token) {
-        int walletId = sessionService.getWalletId(token);
+    public WalletResponseDTO getCurrentUser() {
+        int walletId = sessionService.getWalletId(getToken());
         Wallet wallet = walletRepository.findById(walletId)
                 .orElseThrow(() -> {
-                    sessionService.endSession(token);
+                    sessionService.endSession(getToken());
                     return new NotFoundException("Wallet not found");
                 });
         return walletMapper.toResponseDTO(wallet);
     }
 
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 }

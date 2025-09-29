@@ -7,7 +7,7 @@ import service.interfaces.FeeCalculator;
 
 public class BitcoinFeeCalculatorImpl implements FeeCalculator {
     @Override
-    public double calculateFee(double amount, FeePriority priority, Wallet wallet) {
+    public double calculateFee(FeePriority priority) {
         int txSizeBytes = 250;
 
         int satPerByte;

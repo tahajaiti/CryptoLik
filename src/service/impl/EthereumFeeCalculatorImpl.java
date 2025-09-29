@@ -1,14 +1,13 @@
 package service.impl;
 
 import config.FeeConfig;
-import entity.Wallet;
 import entity.enums.FeePriority;
 import service.interfaces.FeeCalculator;
 
 public class EthereumFeeCalculatorImpl implements FeeCalculator {
 
     @Override
-    public double calculateFee(double amount, FeePriority priority, Wallet wallet) {
+    public double calculateFee(FeePriority priority) {
         int gasLimit = 21000;
 
         int gasPrice;

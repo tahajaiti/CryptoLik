@@ -8,6 +8,6 @@ import dto.response.WalletResponseDTO;
 public interface AuthService {
     WalletResponseDTO register(WalletRequestDTO requestDTO);
     AuthResponseDTO login(AuthRequestDTO requestDTO);
-    void logout(String token);
-    WalletResponseDTO getCurrentUser(String token);
+    void logout();
+    WalletResponseDTO getCurrentUser();
 }
