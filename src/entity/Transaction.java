@@ -2,6 +2,7 @@ package entity;
 
 import entity.enums.FeePriority;
 import entity.enums.TransactionStatus;
+import entity.enums.WalletType;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -12,20 +13,33 @@ public class Transaction {
     private String destAddress;
     private double amount;
     private double fee;
+    private WalletType walletType;
     private FeePriority feePriority;
     private TransactionStatus status;
     private LocalDateTime timestamp;
     private int mempoolPosition;
 
     public Transaction(String sourceAddress, String destinationAddress, double amount,
-            FeePriority feePriority, double fees) {
+                       FeePriority feePriority, double fees, WalletType walletType) {
+        this.id = UUID.randomUUID();
         this.srcAddress = sourceAddress;
         this.destAddress = destinationAddress;
         this.amount = amount;
         this.feePriority = feePriority;
+        this.walletType = walletType;
         this.fee = fees;
         this.status = TransactionStatus.PENDING;
         this.mempoolPosition = -1;
+        this.timestamp = LocalDateTime.now();
+    }
+
+
+    public WalletType getWalletType() {
+        return walletType;
+    }
+
+    public void setWalletType(WalletType walletType) {
+        this.walletType = walletType;
     }
 
     public int getMempoolPosition() {

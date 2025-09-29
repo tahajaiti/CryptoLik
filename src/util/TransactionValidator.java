@@ -2,6 +2,7 @@ package util;
 
 import entity.Transaction;
 import entity.Wallet;
+import entity.enums.FeePriority;
 import entity.enums.WalletType;
 
 import java.util.regex.Pattern;
@@ -14,17 +15,24 @@ public class TransactionValidator {
 
     private TransactionValidator(){}
 
-    public static void validate(Transaction tx, Wallet sourceWallet) throws IllegalArgumentException {
-        if (tx.getAmount() <= 0) {
-            throw new IllegalArgumentException("The amount must be positive.");
-        }
-
-        if (sourceWallet.getBalance() < (tx.getAmount() + tx.getFee())) {
-            throw new IllegalArgumentException("No funds available in the wallet.");
-        }
-
-        if (!isValidAddress(tx.getDestAddress(), sourceWallet.getWalletType())) {
-            throw new IllegalArgumentException("Invalid destination address.");
+    public static FeePriority parseFeePriority(String input) {
+        if (input == null) throw new IllegalArgumentException("Fee priority is required.");
+        input = input.trim();
+        switch (input) {
+            case "1":
+            case "economic":
+            case "ECONOMIC":
+                return FeePriority.ECONOMIC;
+            case "2":
+            case "standard":
+            case "STANDARD":
+                return FeePriority.STANDARD;
+            case "3":
+            case "rapid":
+            case "RAPID":
+                return FeePriority.RAPID;
+            default:
+                throw new IllegalArgumentException("Invalid fee priority selection.");
         }
     }
 

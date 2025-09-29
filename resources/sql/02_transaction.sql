@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS transactions (
     fee NUMERIC(38, 18) NOT NULL,
     fee_priority fee_priority NOT NULL,
     status transaction_status NOT NULL DEFAULT 'PENDING',
+    wallet_type wallet_type NOT NULL,
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     mempool_position INT DEFAULT -1
     );
