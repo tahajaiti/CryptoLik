@@ -51,8 +51,8 @@ public class MainMenu implements Menu {
             ui.showL("You selected Check mempool state");
             return MenuResult.stay();
             case "6":
-            ui.showL("You selected Receive funds");
-            return MenuResult.stay();
+                ui.showL("You selected Recieve funds");
+                return MenuResult.goTo("recieve_funds_menu");
             case "7":
                 return MenuResult.exit();
             default:

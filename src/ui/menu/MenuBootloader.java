@@ -1,22 +1,47 @@
 package ui.menu;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import di.DIContainerImpl;
+import exceptions.FailedToRegisterMenuException;
 import ui.Menu;
 import ui.UIManager;
+import ui.menu.sub.FundsMenu;
+import ui.menu.sub.TxCreateMenu;
+import ui.menu.sub.WalletDisplayMenu;
 import util.Log;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MenuBootloader {
     private final Map<String, Menu> menus = new HashMap<>();
     private final UIManager ui;
+    private final DIContainerImpl diContainer;
 
-    public MenuBootloader(UIManager ui) {
+    private final List<Class<? extends Menu>> menuClasses = Arrays.asList(
+            AuthMenu.class,
+            MainMenu.class,
+            WalletDisplayMenu.class,
+            TxCreateMenu.class,
+            FundsMenu.class
+    );
+
+    public MenuBootloader(UIManager ui, DIContainerImpl diContainer) {
         this.ui = ui;
+        this.diContainer = diContainer;
+
+        registerMenus();
     }
 
-    public void register(Menu menu) {
-        menus.put(menu.getId(), menu);
+    private void registerMenus() {
+        for (Class<? extends Menu> menuClass : menuClasses) {
+            try {
+                Menu menu = diContainer.resolve(menuClass);
+                menus.put(menu.getId(), menu);
+            } catch (Exception e) {
+                throw new FailedToRegisterMenuException("Failed to register menu: " + menuClass.getName(), e);
+            }
+        }
     }
 
     public void boot(String startId) {
@@ -31,7 +56,13 @@ public class MenuBootloader {
                 return;
             }
 
-            MenuResult result = currentMenu.render(ui);
+            MenuResult result = null;
+            try {
+                result = currentMenu.render(ui);
+            } catch (Exception e) {
+                Log.error(getClass(), "Error: " + e.getMessage());
+                result = MenuResult.stay();
+            }
 
             if (result == null) {
                 Log.error(getClass(), "Menu " + currentMenu.getId() + " returned null result, exiting",
@@ -47,7 +78,7 @@ public class MenuBootloader {
                 case GOTO:
                     Menu next = menus.get(result.getMenuId());
                     if (next == null) {
-                        ui.showL("Uknownk menu id: " + result.getMenuId());
+                        ui.showL("Unknown menu id: " + result.getMenuId());
                         break;
                     }
 
@@ -56,5 +87,4 @@ public class MenuBootloader {
             }
         }
     }
-
 }
