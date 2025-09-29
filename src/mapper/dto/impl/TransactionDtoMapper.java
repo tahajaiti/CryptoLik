@@ -3,9 +3,9 @@ package mapper.dto.impl;
 import dto.request.TransactionRequestDTO;
 import dto.response.TransactionResponseDTO;
 import entity.Transaction;
-import mapper.dto.interfaces.DTOMapper;
+import mapper.dto.interfaces.TransactionDTOMapper;
 
-public class TransactionDtoMapper implements DTOMapper<Transaction, TransactionResponseDTO, TransactionRequestDTO> {
+public class TransactionDtoMapper implements TransactionDTOMapper {
 
     @Override
     public TransactionResponseDTO toResponseDTO(Transaction tx) {

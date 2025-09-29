@@ -3,6 +3,7 @@ package mapper.db.impl;
 import entity.Transaction;
 import entity.enums.FeePriority;
 import entity.enums.TransactionStatus;
+import entity.enums.WalletType;
 import mapper.db.DBMapper;
 
 import java.sql.PreparedStatement;
@@ -20,7 +21,8 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
                 rs.getString("destination_address"),
                 rs.getDouble("amount"),
                 FeePriority.valueOf(rs.getString("fee_priority")),
-                rs.getDouble("fees")
+                rs.getDouble("fees"),
+                WalletType.valueOf(rs.getString("wallet_type"))
         );
 
         String idStr = rs.getString("id");
@@ -42,13 +44,13 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
 
     @Override
     public void toInsertStmt(PreparedStatement stmt, Transaction tx) throws SQLException {
-        stmt.setString(1, tx.getId().toString());
-        stmt.setString(2, tx.getSrcAddress());
-        stmt.setString(3, tx.getDestAddress());
-        stmt.setDouble(4, tx.getAmount());
-        stmt.setDouble(5, tx.getFee());
-        stmt.setString(6, tx.getFeePriority().name());
-        stmt.setString(7, tx.getStatus().name());
+        stmt.setString(1, tx.getSrcAddress());
+        stmt.setString(2, tx.getDestAddress());
+        stmt.setDouble(3, tx.getAmount());
+        stmt.setDouble(4, tx.getFee());
+        stmt.setString(5, tx.getFeePriority().name());
+        stmt.setString(6, tx.getStatus().name());
+        stmt.setString(7, tx.getWalletType().name());
         stmt.setTimestamp(8, Timestamp.valueOf(tx.getTimestamp()));
         stmt.setInt(9, tx.getMempoolPosition());
     }
@@ -56,11 +58,5 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
     @Override
     public void toUpdateStmt(PreparedStatement stmt, Transaction tx) throws SQLException {
         throw new SQLException("Update operation not supported for Transaction entity.");
-    }
-
-    @Override
-    public Transaction setId(Transaction entity, int id) {
-        // Transaction ID is a UUID and is set during creation, so this method is not applicable.
-        return entity;
     }
 }

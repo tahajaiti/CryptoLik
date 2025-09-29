@@ -37,10 +37,4 @@ public class WalletDbMapper implements DBMapper<Wallet> {
         stmt.setDouble(1, wallet.getBalance());
         stmt.setInt(2, wallet.getId());
     }
-
-    @Override
-    public Wallet setId(Wallet entity, int id) {
-        entity.setId(id);
-        return entity;
-    }
 }
