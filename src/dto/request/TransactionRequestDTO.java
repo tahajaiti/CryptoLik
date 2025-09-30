@@ -25,7 +25,7 @@ public class TransactionRequestDTO {
     public WalletType getWalletType() {
         return walletType;
     }
-    
+
 
     public String getSrcAddress() {
         return srcAddress;

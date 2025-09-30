@@ -17,11 +17,11 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
     @Override
     public Transaction fromResult(ResultSet rs) throws SQLException {
         Transaction tx = new Transaction(
-                rs.getString("source_address"),
-                rs.getString("destination_address"),
+                rs.getString("src_address"),
+                rs.getString("dest_address"),
                 rs.getDouble("amount"),
                 FeePriority.valueOf(rs.getString("fee_priority")),
-                rs.getDouble("fees"),
+                rs.getDouble("fee"),
                 WalletType.valueOf(rs.getString("wallet_type"))
         );
 
@@ -32,9 +32,9 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
 
         tx.setStatus(TransactionStatus.valueOf(rs.getString("status")));
 
-        tx.setMempoolPosition(rs.getInt("position"));
+        tx.setMempoolPosition(rs.getInt("mempool_position"));
 
-        Timestamp ts = rs.getTimestamp("created_at");
+        Timestamp ts = rs.getTimestamp("timestamp");
         if (ts != null) {
             tx.setTimestamp(ts.toLocalDateTime());
         }
@@ -57,6 +57,9 @@ public class TransactionDbMapper implements DBMapper<Transaction> {
 
     @Override
     public void toUpdateStmt(PreparedStatement stmt, Transaction tx) throws SQLException {
-        throw new SQLException("Update operation not supported for Transaction entity.");
+        stmt.setString(1, tx.getStatus().name());
+        stmt.setInt(2, tx.getMempoolPosition());
+        stmt.setString(3, tx.getId().toString());
     }
+
 }
