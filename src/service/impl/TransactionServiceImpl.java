@@ -9,6 +9,7 @@ import mapper.dto.interfaces.TransactionDTOMapper;
 import repository.interfaces.TransactionRepository;
 import service.interfaces.FeeCalculator;
 import service.interfaces.TransactionService;
+import service.interfaces.MempoolService;
 import util.Log;
 import util.TransactionValidator;
 
@@ -16,9 +17,9 @@ public class TransactionServiceImpl implements TransactionService {
     
     private final TransactionRepository txRepo;
     private final TransactionDTOMapper txMapper;
-    private final MempoolServiceImpl mempoolService;
+    private final MempoolService mempoolService;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionDTOMapper transactionDTOMapper, MempoolServiceImpl mempoolService) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionDTOMapper transactionDTOMapper, MempoolService mempoolService) {
         this.mempoolService = mempoolService;
         this.txRepo = transactionRepository;
         this.txMapper = transactionDTOMapper;

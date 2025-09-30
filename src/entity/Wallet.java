@@ -3,11 +3,11 @@ package entity;
 import entity.enums.WalletType;
 
 public abstract class Wallet {
-    protected int id;
-    protected WalletType walletType;
-    protected double balance;
-    protected String address;
-    protected String password;
+    private int id;
+    private WalletType walletType;
+    private double balance;
+    private String address;
+    private String password;
 
     protected Wallet(WalletType walletType, double balance, String address) {
         this.walletType = walletType;
