@@ -5,7 +5,7 @@ CREATE TYPE fee_priority AS ENUM ('ECONOMIC', 'STANDARD', 'RAPID');
 END IF;
 
     IF NOT EXISTS (SELECT 1 FROM pg_type WHERE typname = 'transaction_status') THEN
-CREATE TYPE transaction_status AS ENUM ('PENDING', 'CONFIRMED', 'FAILED');
+CREATE TYPE transaction_status AS ENUM ('PENDING', 'COMPLETED', 'FAILED');
 END IF;
 END
 $$;

@@ -11,11 +11,9 @@ import repository.impl.TransactionRepositoryImpl;
 import repository.impl.WalletRepositoryImpl;
 import repository.interfaces.TransactionRepository;
 import repository.interfaces.WalletRepository;
-import service.impl.AuthServiceImpl;
-import service.impl.SessionServiceImpl;
-import service.impl.TransactionServiceImpl;
-import service.impl.WalletDisplayService;
+import service.impl.*;
 import service.interfaces.AuthService;
+import service.interfaces.MempoolService;
 import service.interfaces.SessionService;
 import service.interfaces.TransactionService;
 import ui.UIManager;
@@ -61,6 +59,8 @@ public class DependancyRegistery {
 
         container.register(AuthServiceImpl.class);
         container.register(AuthService.class, container.resolve(AuthServiceImpl.class));
+        container.register(MempoolServiceImpl.class);
+        container.register(MempoolService.class, container.resolve(MempoolServiceImpl.class));
 
         // transaction service: register impl then interface mapping
         container.register(TransactionServiceImpl.class);
