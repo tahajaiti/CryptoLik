@@ -95,20 +95,30 @@ public abstract class JdbcRepository<T, ID> implements Repository<T, ID> {
         return list;
     }
 
+
     @Override
-    public void update(T entity) {
+    public T update(T entity) {
         String sql = getUpdateQuery();
         try (Connection conn = dbConnection.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)) {
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             getMapper().toUpdateStmt(stmt, entity);
-            stmt.executeUpdate();
+            int affected = stmt.executeUpdate();
+
+            if (affected == 0) {
+                throw new SQLException("Updating entity failed, no rows affected.");
+            }
+
+            return entity;
 
         } catch (SQLException e) {
-            Log.error(getClass(), "Error updating entity by ID in " + getTableName());
+            Log.error(getClass(),
+                    "Error updating entity by ID in " + getTableName() + ": " + e.getMessage(),
+                    e);
             throw new FailedToSaveException("Failed to update entity in " + getTableName(), e);
         }
     }
+
 
     @Override
     public void delete(ID id) {
@@ -116,7 +126,7 @@ public abstract class JdbcRepository<T, ID> implements Repository<T, ID> {
         try (Connection conn = dbConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setObject(1, id); // works for int or UUID
+            stmt.setObject(1, id);
             stmt.executeUpdate();
 
         } catch (SQLException e) {
