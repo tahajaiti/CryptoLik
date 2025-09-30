@@ -9,14 +9,17 @@ import mapper.dto.interfaces.TransactionDTOMapper;
 import repository.interfaces.TransactionRepository;
 import service.interfaces.FeeCalculator;
 import service.interfaces.TransactionService;
+import util.Log;
 import util.TransactionValidator;
 
 public class TransactionServiceImpl implements TransactionService {
     
     private final TransactionRepository txRepo;
     private final TransactionDTOMapper txMapper;
+    private final MempoolServiceImpl mempoolService;
 
-    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionDTOMapper transactionDTOMapper) {
+    public TransactionServiceImpl(TransactionRepository transactionRepository, TransactionDTOMapper transactionDTOMapper, MempoolServiceImpl mempoolService) {
+        this.mempoolService = mempoolService;
         this.txRepo = transactionRepository;
         this.txMapper = transactionDTOMapper;
     }
@@ -34,16 +37,26 @@ public class TransactionServiceImpl implements TransactionService {
 
         double transactionFee = feeCalculator.calculateFee(feePriority);
 
+        double finalAmount = requestDTO.getAmount() + transactionFee;
+
+        Log.info(getClass(), "Calculated transaction fee: " + transactionFee);
+
         Transaction tx = new Transaction(
             requestDTO.getSrcAddress(),
             requestDTO.getDestAddress(),
-            requestDTO.getAmount(),
+            finalAmount,
             feePriority,
             transactionFee,
             walletType
         );
 
+        Log.info(getClass(), "Creating transaction: " + tx.toString());
+
         Transaction savedTx = txRepo.save(tx);
+
+        Log.info(getClass(), "Transaction created: " + savedTx.toString());
+
+        mempoolService.addTransaction(savedTx);
         
         return txMapper.toResponseDTO(savedTx);
     }

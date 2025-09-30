@@ -1,6 +1,5 @@
 package dto.request;
 
-import entity.enums.FeePriority;
 import entity.enums.WalletType;
 
 public class TransactionRequestDTO {
