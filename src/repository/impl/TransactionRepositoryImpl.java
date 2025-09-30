@@ -2,10 +2,20 @@ package repository.impl;
 
 import db.DBConnection;
 import entity.Transaction;
+import entity.enums.TransactionStatus;
+import exceptions.NotFoundException;
 import mapper.db.DBMapper;
 import mapper.db.impl.TransactionDbMapper;
 import repository.interfaces.TransactionRepository;
+import util.Log;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class TransactionRepositoryImpl extends JdbcRepository<Transaction, UUID> implements TransactionRepository {
@@ -29,8 +39,10 @@ public class TransactionRepositoryImpl extends JdbcRepository<Transaction, UUID>
 
     @Override
     protected String getUpdateQuery() {
-        throw new UnsupportedOperationException("Update operation not supported for Transaction entity.");
+        return "UPDATE " + getTableName() +
+                " SET status = ?::transaction_status, mempool_position = ? WHERE id = ?::uuid";
     }
+
 
     @Override
     protected String getInsertQuery() {
@@ -47,5 +59,29 @@ public class TransactionRepositoryImpl extends JdbcRepository<Transaction, UUID>
             throw new IllegalStateException("Unexpected key type: " + key.getClass());
         }
         return entity;
+    }
+
+    @Override
+    public List<Transaction> findByStatus(TransactionStatus status) {
+        String sql = "SELECT * FROM " + getTableName() + " WHERE status = ?::transaction_status";
+        List<Transaction> list = new ArrayList<>();
+
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, status.name());
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    list.add(getMapper().fromResult(rs));
+                }
+            }
+
+        } catch (SQLException e) {
+            Log.error(getClass(), "Error finding all entities in " + getTableName(), e);
+            throw new NotFoundException("No entities found in " + getTableName());
+        }
+
+        return list;
     }
 }
