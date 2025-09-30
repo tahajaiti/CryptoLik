@@ -25,8 +25,7 @@ public class MainMenu implements Menu {
         ui.showL("3. Check transaction position in mempool");
         ui.showL("4. Compare fee levels");
         ui.showL("5. Check mempool state");
-        ui.showL("6. Recieve funds");
-        ui.showL("7. Exit");
+        ui.showL("6. Exit");
         
         return input(ui);
     }
@@ -43,17 +42,14 @@ public class MainMenu implements Menu {
             return MenuResult.goTo("tx_create_menu");
             case "3":
             ui.showL("You selected Check transaction position in mempool");
-            return MenuResult.stay();
+            return MenuResult.goTo("tx_position_menu");
             case "4":
             ui.showL("You selected Compare fee levels");
-            return MenuResult.stay();
+            return MenuResult.goTo("compare_fee_menu");
             case "5":
             ui.showL("You selected Check mempool state");
-            return MenuResult.stay();
+            return MenuResult.goTo("mempool_state_menu");
             case "6":
-                ui.showL("You selected Recieve funds");
-                return MenuResult.goTo("recieve_funds_menu");
-            case "7":
                 return MenuResult.exit();
             default:
                 ui.showL("Invalid choice, please try again.");

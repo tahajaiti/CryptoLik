@@ -4,9 +4,7 @@ import di.DIContainerImpl;
 import exceptions.FailedToRegisterMenuException;
 import ui.Menu;
 import ui.UIManager;
-import ui.menu.sub.FundsMenu;
-import ui.menu.sub.TxCreateMenu;
-import ui.menu.sub.WalletDisplayMenu;
+import ui.menu.sub.*;
 import util.Log;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -23,7 +21,9 @@ public class MenuBootloader {
             MainMenu.class,
             WalletDisplayMenu.class,
             TxCreateMenu.class,
-            FundsMenu.class
+            TxPositionMenu.class,
+            CompareFeeMenu.class,
+            MempoolStateMenu.class
     );
 
     public MenuBootloader(UIManager ui, DIContainerImpl diContainer) {

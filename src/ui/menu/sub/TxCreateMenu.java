@@ -9,7 +9,7 @@ import service.interfaces.TransactionService;
 import ui.Menu;
 import ui.menu.MenuResult;
 
-public class TxCreateMenu  implements Menu{
+public class TxCreateMenu implements Menu {
     private static final String ID = "tx_create_menu";
     private final TransactionService txService;
     private final AuthService authService;
@@ -33,18 +33,17 @@ public class TxCreateMenu  implements Menu{
     public MenuResult render(ui.UIManager ui) {
         WalletResponseDTO wallet = authService.getCurrentUser();
 
-        String srcAddress = ui.getString("Enter source address: ").trim();
         String destAddress = ui.getString("Enter destination address: ").trim();
         double amount = ui.getDouble("Enter amount to send: ");
         String feePriorityInput = ui.getString("Enter fee priority (ECONOMIC, STANDARD, RAPID): ").trim();
         WalletType walletType = wallet.getWalletType();
 
         TransactionRequestDTO requestDTO = new TransactionRequestDTO(
-            srcAddress,
-            destAddress,
-            amount,
-            feePriorityInput,
-            walletType
+                wallet.getAddress(),
+                destAddress,
+                amount,
+                feePriorityInput,
+                walletType
         );
 
         TransactionResponseDTO response = txService.createTransaction(requestDTO);
@@ -55,6 +54,6 @@ public class TxCreateMenu  implements Menu{
 
         return MenuResult.goTo("main_menu");
     }
-    
+
 
 }
