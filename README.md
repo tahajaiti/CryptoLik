@@ -153,7 +153,6 @@ CryptoLik/
 2. **Login/Register** → Access main features
 3. **Transaction Management** → Create and manage transactions
 4. **Mempool Monitoring** → View pending transactions
-5. **Account Management** → Manage user accounts and balances
 
 ## Screenshots
 
