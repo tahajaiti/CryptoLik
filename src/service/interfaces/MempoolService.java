@@ -9,13 +9,13 @@ import entity.Transaction;
 import java.util.List;
 
 public interface MempoolService extends Runnable{
-    void addTransaction(Transaction tx);
-
     MempoolPositionResponseDTO getPosition(String txId);
 
     List<FeeComparisonDTO> compareFeeLevels();
 
     MempoolStateResponseDTO getCurrentMempoolState(WalletResponseDTO userWallet);
+
+    void addTransaction(Transaction tx);
 
     void stop();
 }

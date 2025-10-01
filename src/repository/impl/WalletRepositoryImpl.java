@@ -2,9 +2,17 @@ package repository.impl;
 
 import db.DBConnection;
 import entity.Wallet;
+import exceptions.NotFoundException;
 import mapper.db.DBMapper;
 import mapper.db.impl.WalletDbMapper;
 import repository.interfaces.WalletRepository;
+import util.Log;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Optional;
 
 
 public class WalletRepositoryImpl extends JdbcRepository<Wallet, Integer> implements WalletRepository{
@@ -45,4 +53,20 @@ public class WalletRepositoryImpl extends JdbcRepository<Wallet, Integer> implem
         return entity;
     }
 
+    @Override
+    public Optional<Wallet> findByAddress(String address) {
+        String sql = "SELECT * FROM wallets WHERE address = ?";
+        try (Connection conn = dbConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setObject(1, address);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) return Optional.of(getMapper().fromResult(rs));
+
+        } catch (SQLException e) {
+            Log.error(getClass(), "Error finding wallet by address in " + getTableName());
+            throw new NotFoundException("Entity with address " + address + " not found in " + getTableName());
+        }
+        return Optional.empty();
+    }
 }

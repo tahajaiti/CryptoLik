@@ -59,14 +59,22 @@ public class DependancyRegistery {
 
         container.register(AuthServiceImpl.class);
         container.register(AuthService.class, container.resolve(AuthServiceImpl.class));
-        container.register(MempoolServiceImpl.class);
-        container.register(MempoolService.class, container.resolve(MempoolServiceImpl.class));
 
-        // transaction service: register impl then interface mapping
-        container.register(TransactionServiceImpl.class);
-        container.register(TransactionService.class, container.resolve(TransactionServiceImpl.class));
+        MempoolServiceImpl mempoolServiceImpl = new MempoolServiceImpl(container.resolve(TransactionRepository.class));
+        container.register(MempoolServiceImpl.class, mempoolServiceImpl);
+        container.register(MempoolService.class, mempoolServiceImpl);
+
+        TransactionServiceImpl transactionServiceImpl = new TransactionServiceImpl(
+                container.resolve(TransactionRepository.class),
+                container.resolve(TransactionDTOMapper.class),
+                container.resolve(MempoolService.class),
+                container.resolve(WalletRepository.class)
+        );
+        container.register(TransactionServiceImpl.class, transactionServiceImpl);
+        container.register(TransactionService.class, transactionServiceImpl);
+
+        mempoolServiceImpl.setTransactionService(transactionServiceImpl);
 
         container.register(WalletDisplayService.class);
-
     }
 }

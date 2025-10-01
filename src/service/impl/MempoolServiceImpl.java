@@ -13,7 +13,7 @@ import exceptions.MempoolFullException;
 import exceptions.MempoolProcessingException;
 import exceptions.TransactionNotFoundException;
 import repository.interfaces.TransactionRepository;
-import service.interfaces.MempoolService;
+import service.interfaces.*;
 import util.Log;
 
 import java.util.*;
@@ -25,6 +25,7 @@ public class MempoolServiceImpl implements MempoolService {
 
     private volatile boolean running = true;
     private final TransactionRepository txRepository;
+    private TransactionService txService;
     private final Map<String, Transaction> mempoolCache;
     private final PriorityBlockingQueue<Transaction> mempoolQueue;
 
@@ -39,6 +40,13 @@ public class MempoolServiceImpl implements MempoolService {
         this.mempoolCache = new ConcurrentHashMap<>();
         this.mempoolQueue = new PriorityBlockingQueue<>(MempoolConfig.MAX_MEMPOOL_SIZE, txComparator);
         boot();
+    }
+
+    public void setTransactionService(TransactionService txService) {
+        this.txService = txService;
+        if (this.txService != null) {
+            this.txService.generateRandomTransactions(MempoolConfig.MAX_GEN_TX);
+        }
     }
 
     // ====================
@@ -80,9 +88,11 @@ public class MempoolServiceImpl implements MempoolService {
                 txRepository.update(tx);
                 mempoolCache.remove(tx.getId().toString());
 
+                txService.applyTransaction(tx.getId());
+
                 updateMempoolPositions();
                 Log.info(getClass(), "Processed transaction: " + tx.getId().toString().substring(0, 8) + "...");
-            } catch (Exception e) {
+            } catch (InterruptedException e) {
                 Log.error(getClass(), "Failed to process transaction: " + tx.getId(), e);
                 throw new MempoolProcessingException("Failed to process transaction: " + tx.getId(), e);
             }
