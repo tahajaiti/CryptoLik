@@ -39,25 +39,42 @@ CryptoLik/
 ### Prerequisites
 
 - Java Development Kit (JDK) 8 or higher
+- PostgreSQL database server
 - IDE (IntelliJ IDEA, Eclipse, or VS Code recommended)
 - Git (for version control)
 
-### Installation
 
-1. **Clone the repository:**
+### Installation and Configuration
 
-   ```bash
-   git clone git@github.com:tahajaiti/CryptoLik.git
-   cd CryptoLik
-   ```
+1.  **Clone the repository:**
 
-2. **Compile the project:**
+    ```bash
+    git clone git@github.com:tahajaiti/CryptoLik.git
+    cd CryptoLik
+    ```
+
+2.  **Database Setup:**
+   - Ensure your PostgreSQL server is running.
+   - Create a new database for the application.
+   - Update the database connection details in `src/config/DBConfig.java`. Modify the `DB_URL`, `DB_USER`, and `DB_PASSWORD` fields with your database credentials.
+
+```java
+    // Example from src/config/DBConfig.java
+    public class DBConfig {
+        public static final String DB_URL = "jdbc:postgresql://localhost:5432/your_database";
+        public static final String DB_USER = "your_username";
+        public static final String DB_PASSWORD = "your_password";
+    }
+```
+   - Run the SQL scripts located in the `resources/sql/` directory against your database to set up the required tables.
+
+3. **Compile the project:**
 
    ```bash
    javac -cp "lib/*:." src/**/*.java -d out
    ```
 
-3. **Run the application:**
+4. **Run the application:**
 
    ```bash
    java -cp "lib/*:out" Main
@@ -69,6 +86,38 @@ CryptoLik/
    - Set the main class as `Main.java`
    - Run the project
 
+### Creating and Running the Executable JAR
+
+- You can package the application into an executable JAR file.
+
+1. Create the MANIFEST.MF file with the following content:
+
+   ```
+   Manifest-Version: 1.0
+   Main-Class: Main
+   Class-Path: lib/postgresql-42.7.8.jar
+
+   ```
+
+2. Compile and package the JAR:
+   
+- Use the jar command to package your compiled classes into CryptoLik.jar. This command must be run from the project's root directory.
+
+   ```bash
+   jar cvfm CryptoLik.jar MANIFEST.MF -C out/ . lib
+   ```
+
+- **cvfm** : creates a new JAR, uses verbose output, specifies the JAR file name, and uses the specified manifest.
+- **CryptoLik.jar** : The name of the output JAR file.
+- **MANIFEST.MF** : The manifest file to include.
+- **-C out .** : Changes to the out directory and includes all of its contents.
+
+3. Run the JAR file:
+
+   ```bash
+   java -jar CryptoLik.jar
+   ```
+   
 ## Usage Guide
 
 ### Starting the Application
@@ -108,4 +157,13 @@ CryptoLik/
 
 ## Screenshots
 
+[![Class Diagram](resources/classdiagram.png)](resources/classdiagram.png)
+
+[![CryptoLik Screenshot](resources/captures/1.png)](resources/captures/1.png)
+
+[![CryptoLik Screenshot](resources/captures/2.png)](resources/captures/2.png)
+
+[![CryptoLik Screenshot](resources/captures/3.png)](resources/captures/3.png)
+
+[![CryptoLik Screenshot](resources/captures/4.png)](resources/captures/4.png)
 ---
